@@ -1,15 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AzureStorage.Tables;
 using Common.Log;
+using Lykke.AlgoStore.Job.AlgoTrades.Modules;
+using Lykke.AlgoStore.Job.AlgoTrades.Settings;
+using Lykke.Common.Api.Contract.Responses;
 using Lykke.Common.ApiLibrary.Middleware;
 using Lykke.Common.ApiLibrary.Swagger;
-using Lykke.Common.Api.Contract.Responses;
-using Lykke.AlgoStore.Job.AlgoTrades.Core.Services;
-using Lykke.AlgoStore.Job.AlgoTrades.Settings;
-using Lykke.AlgoStore.Job.AlgoTrades.Modules;
 using Lykke.Logs;
 using Lykke.SettingsReader;
 using Lykke.SlackNotification.AzureQueue;
@@ -17,6 +14,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 
 namespace Lykke.AlgoStore.Job.AlgoTrades
 {
@@ -50,7 +49,7 @@ namespace Lykke.AlgoStore.Job.AlgoTrades
 
                 services.AddSwaggerGen(options =>
                 {
-                    options.DefaultLykkeConfiguration("v1", "AlgoTrades API");
+                    options.DefaultLykkeConfiguration("v1", "AlgoTrades Job");
                 });
 
                 var builder = new ContainerBuilder();
@@ -58,7 +57,7 @@ namespace Lykke.AlgoStore.Job.AlgoTrades
 
                 Log = CreateLogWithSlack(services, appSettings);
 
-                builder.RegisterModule(new JobModule(appSettings.CurrentValue.AlgoTradesJob, appSettings.Nested(x => x.AlgoTradesJob), Log));
+                builder.RegisterModule(new JobModule(appSettings, Log));
 
                 builder.Populate(services);
 
@@ -83,7 +82,7 @@ namespace Lykke.AlgoStore.Job.AlgoTrades
                 }
 
                 app.UseLykkeForwardedHeaders();
-                app.UseLykkeMiddleware("AlgoTrades", ex => new ErrorResponse {ErrorMessage = "Technical problem"});
+                app.UseLykkeMiddleware("AlgoTrades", ex => new ErrorResponse { ErrorMessage = "Technical problem" });
 
                 app.UseMvc();
                 app.UseSwagger(c =>
@@ -97,8 +96,6 @@ namespace Lykke.AlgoStore.Job.AlgoTrades
                 });
                 app.UseStaticFiles();
 
-                appLifetime.ApplicationStarted.Register(() => StartApplication().GetAwaiter().GetResult());
-                appLifetime.ApplicationStopping.Register(() => StopApplication().GetAwaiter().GetResult());
                 appLifetime.ApplicationStopped.Register(() => CleanUp().GetAwaiter().GetResult());
             }
             catch (Exception ex)
@@ -108,51 +105,15 @@ namespace Lykke.AlgoStore.Job.AlgoTrades
             }
         }
 
-        private async Task StartApplication()
-        {
-            try
-            {
-                // NOTE: Job not yet recieve and process IsAlive requests here
-
-                await ApplicationContainer.Resolve<IStartupManager>().StartAsync();
-                await Log.WriteMonitorAsync("", Program.EnvInfo, "Started");
-            }
-            catch (Exception ex)
-            {
-                await Log.WriteFatalErrorAsync(nameof(Startup), nameof(StartApplication), "", ex);
-                throw;
-            }
-        }
-
-        private async Task StopApplication()
-        {
-            try
-            {
-                // NOTE: Job still can recieve and process IsAlive requests here, so take care about it if you add logic here.
-
-                await ApplicationContainer.Resolve<IShutdownManager>().StopAsync();
-            }
-            catch (Exception ex)
-            {
-                if (Log != null)
-                {
-                    await Log.WriteFatalErrorAsync(nameof(Startup), nameof(StopApplication), "", ex);
-                }
-                throw;
-            }
-        }
-
         private async Task CleanUp()
         {
             try
             {
-                // NOTE: Job can't recieve and process IsAlive requests here, so you can destroy all resources
-                
                 if (Log != null)
                 {
                     await Log.WriteMonitorAsync("", Program.EnvInfo, "Terminating");
                 }
-                
+
                 ApplicationContainer.Dispose();
             }
             catch (Exception ex)

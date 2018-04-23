@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Lykke.AlgoStore.CSharp.AlgoTemplate.Models" Version="1.0.37-beta" />
     <PackageReference Include="Lykke.Common" Version="6.4.0" />
+    <PackageReference Include="Lykke.Service.OperationsRepository.Contract" Version="1.0.13" />
   </ItemGroup>
 
   <ItemGroup>
