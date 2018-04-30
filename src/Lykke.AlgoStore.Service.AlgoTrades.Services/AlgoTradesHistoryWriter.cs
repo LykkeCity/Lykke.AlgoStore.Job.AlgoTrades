@@ -44,6 +44,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
                         Fee = clientTrade.FeeSize,
                         Amount = clientTrade.Amount,
                         WalletId = algoInstanceOrder.WalletId,
+                        OrderId = algoInstanceOrder.OrderId,
                         IsBuy = algoInstanceOrder.IsBuy,
                         Price = algoInstanceOrder.Price
                     };

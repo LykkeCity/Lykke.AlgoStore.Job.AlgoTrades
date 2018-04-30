@@ -16,6 +16,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
+using AutoMapper;
+using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Mapper;
 
 namespace Lykke.AlgoStore.Job.AlgoTrades
 {
@@ -28,6 +30,13 @@ namespace Lykke.AlgoStore.Job.AlgoTrades
 
         public Startup(IHostingEnvironment env)
         {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfiles(typeof(AutoMapperModelProfile));
+            });
+
+            Mapper.AssertConfigurationIsValid();
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddEnvironmentVariables();
