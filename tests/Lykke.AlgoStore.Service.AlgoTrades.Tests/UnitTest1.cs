@@ -1,6 +1,6 @@
-using Xunit;
+﻿using Xunit;
 
-namespace Lykke.AlgoStore.Job.AlgoTrades.Tests
+namespace Lykke.AlgoStore.Service.AlgoTrades.Tests
 {
     public class UnitTest1
     {
@@ -9,4 +9,5 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Tests
         {
         }
     }
+
 }

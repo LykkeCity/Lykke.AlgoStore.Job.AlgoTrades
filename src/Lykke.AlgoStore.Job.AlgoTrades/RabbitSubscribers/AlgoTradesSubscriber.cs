@@ -2,12 +2,12 @@
 using Common;
 using Common.Log;
 using Lykke.AlgoStore.Job.AlgoTrades.Settings.JobSettings;
+using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 using Lykke.RabbitMqBroker;
 using Lykke.RabbitMqBroker.Subscriber;
 using Lykke.Service.OperationsRepository.Contract.History;
 using System;
 using System.Threading.Tasks;
-using Lykke.AlgoStore.Job.AlgoTrades.Core.Services;
 
 namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
 {

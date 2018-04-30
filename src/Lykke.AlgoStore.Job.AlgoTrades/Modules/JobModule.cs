@@ -3,11 +3,10 @@ using AzureStorage.Tables;
 using Common.Log;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Entities;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
-using Lykke.AlgoStore.Job.AlgoTrades.Core.Services;
 using Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers;
-using Lykke.AlgoStore.Job.AlgoTrades.Services;
 using Lykke.AlgoStore.Job.AlgoTrades.Settings;
-using Lykke.AlgoStore.Job.AlgoTrades.Settings.JobSettings;
+using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
+using Lykke.AlgoStore.Service.AlgoTrades.Services;
 using Lykke.SettingsReader;
 
 namespace Lykke.AlgoStore.Job.AlgoTrades.Modules

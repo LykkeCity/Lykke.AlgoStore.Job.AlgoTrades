@@ -1,7 +1,7 @@
 ﻿using Lykke.Service.OperationsRepository.Contract.History;
 using System.Threading.Tasks;
 
-namespace Lykke.AlgoStore.Job.AlgoTrades.Core.Services
+namespace Lykke.AlgoStore.Service.AlgoTrades.Core.Services
 {
     public interface IAlgoTradesHistoryWriter
     {
