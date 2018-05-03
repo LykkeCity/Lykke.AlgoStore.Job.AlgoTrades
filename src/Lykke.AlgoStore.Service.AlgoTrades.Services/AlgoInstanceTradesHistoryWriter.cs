@@ -19,10 +19,12 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
             _algoInstanceTradeRepository = algoInstanceTradeRepository;
         }
 
+        /// <summary>
+        /// Save algo instance trade details when there is a new trade for existing order/row in AlgoStore database.
+        /// </summary>
+        /// <param name="historyRecord">Historical data which comes from RabbitMQ exchange</param>
         public async Task SaveAsync(OperationsHistoryMessage historyRecord)
         {
-            //Save trade history to algo db table...when IAlgoInstanceTradeRepository is ready
-
             var operationType = (OperationType)Enum.Parse(typeof(OperationType), historyRecord.OpType);
 
             if (operationType == OperationType.ClientTrade)

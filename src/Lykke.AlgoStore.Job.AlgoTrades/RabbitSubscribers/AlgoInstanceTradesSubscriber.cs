@@ -11,7 +11,10 @@ using System.Threading.Tasks;
 
 namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
 {
-    public class AlgoTradesSubscriber : IStartable, IStopable
+    /// <summary>
+    /// Algo Instance subscriber which will proceed information about trades. We get information about every Lykke trade. 
+    /// </summary>
+    public class AlgoInstanceTradesSubscriber : IStartable, IStopable
     {
         private readonly IAlgoInstanceTradesHistoryWriter _algoTradesHistoryWriter;
         private readonly ILog _log;
@@ -19,7 +22,7 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
 
         private RabbitMqSubscriber<OperationsHistoryMessage> _subscriber;
 
-        public AlgoTradesSubscriber(
+        public AlgoInstanceTradesSubscriber(
             IAlgoInstanceTradesHistoryWriter algoTradesHistoryWriter,
             ILog log,
             RabbitMqSettings rabbitSettings)

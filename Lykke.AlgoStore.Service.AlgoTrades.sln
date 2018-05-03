@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.AlgoStore.Service.AlgoTrades", "src\Lykke.AlgoStore.Service.AlgoTrades\Lykke.AlgoStore.Service.AlgoTrades.csproj", "{E414FDB9-FEEA-4CD0-9BBA-D1541601DF29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lykke.AlgoStore.Job.AlgoTrades", "src\Lykke.AlgoStore.Job.AlgoTrades\Lykke.AlgoStore.Job.AlgoTrades.csproj", "{5903ED36-C040-45B9-8F16-B52D7D526B28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.AlgoStore.Job.AlgoTrades", "src\Lykke.AlgoStore.Job.AlgoTrades\Lykke.AlgoStore.Job.AlgoTrades.csproj", "{5903ED36-C040-45B9-8F16-B52D7D526B28}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Instrastructure", "1. Instrastructure", "{CC2067D7-1971-47BB-B491-5649EA3C18B2}"
 EndProject
@@ -31,8 +31,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.AlgoStore.Service.Alg
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Tests", "4. Tests", "{8F9036B1-5106-4C69-B2D2-B78EE52687A0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lykke.AlgoStore.CSharp.AlgoTemplate.Models", "..\Lykke.AlgoStore_Templates_dev\src\Lykke.AlgoStore.CSharp.AlgoTemplate.Models\Lykke.AlgoStore.CSharp.AlgoTemplate.Models.csproj", "{BAFC1B5A-239A-4A66-8CE0-96004F8611B5}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +41,10 @@ Global
 		{E414FDB9-FEEA-4CD0-9BBA-D1541601DF29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E414FDB9-FEEA-4CD0-9BBA-D1541601DF29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E414FDB9-FEEA-4CD0-9BBA-D1541601DF29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5903ED36-C040-45B9-8F16-B52D7D526B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5903ED36-C040-45B9-8F16-B52D7D526B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5903ED36-C040-45B9-8F16-B52D7D526B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5903ED36-C040-45B9-8F16-B52D7D526B28}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F5B2F6B8-A8CC-4612-8F1D-C063EB8C8955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F5B2F6B8-A8CC-4612-8F1D-C063EB8C8955}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5B2F6B8-A8CC-4612-8F1D-C063EB8C8955}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -63,14 +65,6 @@ Global
 		{A61FFDEE-5725-4650-A788-6E55EE5EFD5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A61FFDEE-5725-4650-A788-6E55EE5EFD5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A61FFDEE-5725-4650-A788-6E55EE5EFD5B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BAFC1B5A-239A-4A66-8CE0-96004F8611B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAFC1B5A-239A-4A66-8CE0-96004F8611B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BAFC1B5A-239A-4A66-8CE0-96004F8611B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BAFC1B5A-239A-4A66-8CE0-96004F8611B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5903ED36-C040-45B9-8F16-B52D7D526B28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5903ED36-C040-45B9-8F16-B52D7D526B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5903ED36-C040-45B9-8F16-B52D7D526B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5903ED36-C040-45B9-8F16-B52D7D526B28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

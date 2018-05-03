@@ -42,7 +42,7 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
 
         private void RegisterRabbitMqSubscribers(ContainerBuilder builder)
         {
-            builder.RegisterType<AlgoTradesSubscriber>()
+            builder.RegisterType<AlgoInstanceTradesSubscriber>()
                 .As<IStartable>()
                 .AutoActivate()
                 .SingleInstance()

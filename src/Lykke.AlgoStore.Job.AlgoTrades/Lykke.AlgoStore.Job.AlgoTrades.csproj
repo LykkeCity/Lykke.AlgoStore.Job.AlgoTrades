@@ -43,7 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Lykke.AlgoStore_Templates_dev\src\Lykke.AlgoStore.CSharp.AlgoTemplate.Models\Lykke.AlgoStore.CSharp.AlgoTemplate.Models.csproj" />
     <ProjectReference Include="..\Lykke.AlgoStore.Service.AlgoTrades.Core\Lykke.AlgoStore.Service.AlgoTrades.Core.csproj" />
     <ProjectReference Include="..\Lykke.AlgoStore.Service.AlgoTrades.Services\Lykke.AlgoStore.Service.AlgoTrades.Services.csproj" />
   </ItemGroup>

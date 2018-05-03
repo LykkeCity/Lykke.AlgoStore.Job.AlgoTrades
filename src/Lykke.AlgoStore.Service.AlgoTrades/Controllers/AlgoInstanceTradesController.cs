@@ -1,16 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
+﻿using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Domain;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 using Lykke.AlgoStore.Service.AlgoTrades.Infrastructure.Strings;
 using Lykke.AlgoStore.Service.AlgoTrades.Validations;
 using Lykke.Common.Api.Contract.Responses;
 using Microsoft.AspNetCore.Mvc;
-using MoreLinq;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Controllers
 {
