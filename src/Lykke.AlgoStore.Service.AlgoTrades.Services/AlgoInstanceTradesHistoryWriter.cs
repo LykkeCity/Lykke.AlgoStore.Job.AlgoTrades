@@ -1,4 +1,5 @@
-﻿using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Models;
+﻿using Common.Log;
+using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Models;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 using Lykke.Service.OperationsRepository.Contract;
@@ -13,10 +14,13 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
     public class AlgoInstanceTradesHistoryWriter : IAlgoInstanceTradesHistoryWriter
     {
         private readonly IAlgoInstanceTradeRepository _algoInstanceTradeRepository;
+        private ILog _log;
 
-        public AlgoInstanceTradesHistoryWriter(IAlgoInstanceTradeRepository algoInstanceTradeRepository)
+        public AlgoInstanceTradesHistoryWriter(ILog log,
+            IAlgoInstanceTradeRepository algoInstanceTradeRepository)
         {
             _algoInstanceTradeRepository = algoInstanceTradeRepository;
+            _log = log;
         }
 
         /// <summary>
@@ -25,34 +29,41 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
         /// <param name="historyRecord">Historical data which comes from RabbitMQ exchange</param>
         public async Task SaveAsync(OperationsHistoryMessage historyRecord)
         {
-            var operationType = (OperationType)Enum.Parse(typeof(OperationType), historyRecord.OpType);
-
-            if (operationType == OperationType.ClientTrade)
+            try
             {
-                var clientTrade = JsonConvert.DeserializeObject<ClientTradeDto>(historyRecord.Data);
+                var operationType = (OperationType)Enum.Parse(typeof(OperationType), historyRecord.OpType);
 
-                AlgoInstanceTrade algoInstanceOrder = null;
-
-                if (!string.IsNullOrEmpty(clientTrade.MarketOrderId))
-                    algoInstanceOrder = await _algoInstanceTradeRepository.GetAlgoInstanceOrderAsync(clientTrade.MarketOrderId, clientTrade.ClientId);
-
-                if (algoInstanceOrder != null)
+                if (operationType == OperationType.ClientTrade)
                 {
-                    AlgoInstanceTrade trade = new AlgoInstanceTrade()
-                    {
-                        InstanceId = algoInstanceOrder.InstanceId,
-                        AssetId = clientTrade.AssetId,
-                        AssetPairId = clientTrade.AssetPairId,
-                        Fee = clientTrade.FeeSize,
-                        Amount = clientTrade.Amount,
-                        WalletId = algoInstanceOrder.WalletId,
-                        OrderId = algoInstanceOrder.OrderId,
-                        IsBuy = algoInstanceOrder.IsBuy,
-                        Price = algoInstanceOrder.Price
-                    };
+                    var clientTrade = JsonConvert.DeserializeObject<ClientTradeDto>(historyRecord.Data);
 
-                    await _algoInstanceTradeRepository.SaveAlgoInstanceTradeAsync(trade);
+                    AlgoInstanceTrade algoInstanceOrder = null;
+
+                    if (!string.IsNullOrEmpty(clientTrade.MarketOrderId))
+                        algoInstanceOrder = await _algoInstanceTradeRepository.GetAlgoInstanceOrderAsync(clientTrade.MarketOrderId, clientTrade.ClientId);
+
+                    if (algoInstanceOrder != null)
+                    {
+                        AlgoInstanceTrade trade = new AlgoInstanceTrade()
+                        {
+                            InstanceId = algoInstanceOrder.InstanceId,
+                            AssetId = clientTrade.AssetId,
+                            AssetPairId = clientTrade.AssetPairId,
+                            Fee = clientTrade.FeeSize,
+                            Amount = clientTrade.Amount,
+                            WalletId = algoInstanceOrder.WalletId,
+                            OrderId = algoInstanceOrder.OrderId,
+                            IsBuy = algoInstanceOrder.IsBuy,
+                            Price = algoInstanceOrder.Price
+                        };
+
+                        await _algoInstanceTradeRepository.SaveAlgoInstanceTradeAsync(trade);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                _log.WriteError(nameof(AlgoInstanceTradesHistoryWriter), nameof(SaveAsync), ex);
             }
         }
     }

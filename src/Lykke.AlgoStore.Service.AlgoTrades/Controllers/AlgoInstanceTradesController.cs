@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Common.Log;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Controllers
 {
@@ -18,8 +19,8 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Controllers
     {
         private IAlgoInstanceTradeRepository _algoInstanceTradeRepository;
         private IAlgoInstanceTradesHistoryService _algoInstanceTradesHistoryService;
-        public AlgoInstanceTradesController(IAlgoInstanceTradeRepository algoInstanceTradeRepository,
 
+        public AlgoInstanceTradesController(IAlgoInstanceTradeRepository algoInstanceTradeRepository,
             IAlgoInstanceTradesHistoryService algoInstanceTradesHistoryService)
         {
             _algoInstanceTradeRepository = algoInstanceTradeRepository;
