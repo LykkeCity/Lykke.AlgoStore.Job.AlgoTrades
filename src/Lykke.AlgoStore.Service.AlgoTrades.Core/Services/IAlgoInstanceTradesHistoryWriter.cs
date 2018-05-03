@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Core.Services
 {
-    public interface IAlgoTradesHistoryWriter
+    public interface IAlgoInstanceTradesHistoryWriter
     {
         Task SaveAsync(OperationsHistoryMessage historyRecord);
     }

@@ -13,14 +13,14 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
 {
     public class AlgoTradesSubscriber : IStartable, IStopable
     {
-        private readonly IAlgoTradesHistoryWriter _algoTradesHistoryWriter;
+        private readonly IAlgoInstanceTradesHistoryWriter _algoTradesHistoryWriter;
         private readonly ILog _log;
         private readonly RabbitMqSettings _rabbitSettings;
 
         private RabbitMqSubscriber<OperationsHistoryMessage> _subscriber;
 
         public AlgoTradesSubscriber(
-            IAlgoTradesHistoryWriter algoTradesHistoryWriter,
+            IAlgoInstanceTradesHistoryWriter algoTradesHistoryWriter,
             ILog log,
             RabbitMqSettings rabbitSettings)
         {

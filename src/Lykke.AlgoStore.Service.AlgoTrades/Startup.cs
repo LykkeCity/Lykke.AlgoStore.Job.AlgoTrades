@@ -2,12 +2,15 @@
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using AzureStorage.Tables;
 using Common.Log;
+using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Mapper;
 using Lykke.Common.ApiLibrary.Middleware;
 using Lykke.Common.ApiLibrary.Swagger;
 using Lykke.Logs;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
+using Lykke.AlgoStore.Service.AlgoTrades.Infrastructure;
 using Lykke.AlgoStore.Service.AlgoTrades.Settings;
 using Lykke.AlgoStore.Service.AlgoTrades.Modules;
 using Lykke.SettingsReader;
@@ -28,6 +31,14 @@ namespace Lykke.AlgoStore.Service.AlgoTrades
 
         public Startup(IHostingEnvironment env)
         {
+            Mapper.Initialize(cfg =>
+            {
+                cfg.AddProfiles(typeof(AutoMapperModelProfile));
+                cfg.AddProfile(typeof(HistoryAutoMapperModelProfile));
+            });
+
+            Mapper.AssertConfigurationIsValid();
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddEnvironmentVariables();
@@ -57,7 +68,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades
 
                 Log = CreateLogWithSlack(services, appSettings);
 
-                builder.RegisterModule(new ServiceModule(appSettings.Nested(x => x.AlgoTradesService), Log));
+                builder.RegisterModule(new ServiceModule(appSettings, Log));
                 builder.Populate(services);
                 ApplicationContainer = builder.Build();
 

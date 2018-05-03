@@ -51,8 +51,8 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
 
         private void RegisterApplicationServices(ContainerBuilder builder)
         {
-            builder.RegisterType<AlgoTradesHistoryWriter>()
-                .As<IAlgoTradesHistoryWriter>()
+            builder.RegisterType<AlgoInstanceTradesHistoryWriter>()
+                .As<IAlgoInstanceTradesHistoryWriter>()
                 .SingleInstance();
         }
 

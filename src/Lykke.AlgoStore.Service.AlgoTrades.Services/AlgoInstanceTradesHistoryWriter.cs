@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Services
 {
-    public class AlgoTradesHistoryWriter : IAlgoTradesHistoryWriter
+    public class AlgoInstanceTradesHistoryWriter : IAlgoInstanceTradesHistoryWriter
     {
         private readonly IAlgoInstanceTradeRepository _algoInstanceTradeRepository;
 
-        public AlgoTradesHistoryWriter(IAlgoInstanceTradeRepository algoInstanceTradeRepository)
+        public AlgoInstanceTradesHistoryWriter(IAlgoInstanceTradeRepository algoInstanceTradeRepository)
         {
             _algoInstanceTradeRepository = algoInstanceTradeRepository;
         }
