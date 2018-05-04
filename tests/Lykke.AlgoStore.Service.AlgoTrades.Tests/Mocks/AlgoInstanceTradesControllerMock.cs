@@ -7,8 +7,8 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Tests.Mocks
         public static AlgoInstanceTradesController GetControllerInstance()
         {
             AlgoInstanceTradesController controller = new AlgoInstanceTradesController(
-                                                AlgoInstanceTradesRepositoryMock.GetAlgoClientInstanceRepository(),
-                                                AlgoInstanceTradesHistoryServiceMock.GetAlgoClientInstanceRepository());
+                                                AlgoInstanceTradesRepositoryMock.GetAlgoInstanceTradeRepositoryRepository(),
+                                                AlgoInstanceTradesHistoryServiceMock.GetAlgoInstanceTradesHistoryService());
             return controller;
         }
     }
