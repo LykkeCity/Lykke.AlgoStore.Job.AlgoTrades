@@ -24,7 +24,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models
         /// Initializes a new instance of the AlgoInstanceTradeResponseModel
         /// class.
         /// </summary>
-        public AlgoInstanceTradeResponseModel(string instanceId = default(string), bool? isBuy = default(bool?), double? price = default(double?), double? amount = default(double?), double? fee = default(double?), string orderId = default(string), string assetPair = default(string), string tradedAssetName = default(string), string walletId = default(string))
+        public AlgoInstanceTradeResponseModel(string instanceId = default(string), bool? isBuy = default(bool?), double? price = default(double?), double? amount = default(double?), double? fee = default(double?), string orderId = default(string), string assetPair = default(string), string tradedAssetName = default(string), string walletId = default(string), System.DateTime? dateOfTrade = default(System.DateTime?))
         {
             InstanceId = instanceId;
             IsBuy = isBuy;
@@ -35,6 +35,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models
             AssetPair = assetPair;
             TradedAssetName = tradedAssetName;
             WalletId = walletId;
+            DateOfTrade = dateOfTrade;
             CustomInit();
         }
 
@@ -87,6 +88,11 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models
         /// </summary>
         [JsonProperty(PropertyName = "WalletId")]
         public string WalletId { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "DateOfTrade")]
+        public System.DateTime? DateOfTrade { get; set; }
 
     }
 }
