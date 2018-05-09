@@ -49,7 +49,8 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
                         WalletId = algoInstanceOrder.WalletId,
                         OrderId = algoInstanceOrder.OrderId,
                         IsBuy = algoInstanceOrder.IsBuy,
-                        Price = algoInstanceOrder.Price
+                        Price = algoInstanceOrder.Price,
+                        DateOfTrade = clientTrade.DateTime
                     };
 
                     await _algoInstanceTradeRepository.SaveAlgoInstanceTradeAsync(trade);

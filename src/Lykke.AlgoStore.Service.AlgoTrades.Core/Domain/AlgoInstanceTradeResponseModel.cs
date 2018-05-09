@@ -1,4 +1,6 @@
-﻿namespace Lykke.AlgoStore.Service.AlgoTrades.Core.Domain
+﻿using System;
+
+namespace Lykke.AlgoStore.Service.AlgoTrades.Core.Domain
 {
     public class AlgoInstanceTradeResponseModel
     {
@@ -19,5 +21,7 @@
         public string TradedAssetName { get; set; }
 
         public string WalletId { get; set; }
+
+        public DateTime? DateOfTrade { get; set; }
     }
 }
