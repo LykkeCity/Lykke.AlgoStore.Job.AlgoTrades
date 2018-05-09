@@ -228,7 +228,7 @@
             class.
             </summary>
         </member>
-        <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.AlgoInstanceTradeResponseModel.#ctor(System.String,System.Nullable{System.Boolean},System.Nullable{System.Double},System.Nullable{System.Double},System.Nullable{System.Double},System.String,System.String,System.String,System.String)">
+        <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.AlgoInstanceTradeResponseModel.#ctor(System.String,System.Nullable{System.Boolean},System.Nullable{System.Double},System.Nullable{System.Double},System.Nullable{System.Double},System.String,System.String,System.String,System.String,System.Nullable{System.DateTime})">
             <summary>
             Initializes a new instance of the AlgoInstanceTradeResponseModel
             class.
@@ -267,6 +267,10 @@
             </summary>
         </member>
         <member name="P:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.AlgoInstanceTradeResponseModel.WalletId">
+            <summary>
+            </summary>
+        </member>
+        <member name="P:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.AlgoInstanceTradeResponseModel.DateOfTrade">
             <summary>
             </summary>
         </member>
