@@ -24,7 +24,7 @@ namespace Lykke.AlgoStore.Job.AlgoTrades
             {
                 var webHost = new WebHostBuilder()
                     .UseKestrel()
-                    .UseUrls("http://*:5002")
+                    .UseUrls("http://*:5000")
                     .UseContentRoot(Directory.GetCurrentDirectory())
                     .UseStartup<Startup>()
                     .UseApplicationInsights()
