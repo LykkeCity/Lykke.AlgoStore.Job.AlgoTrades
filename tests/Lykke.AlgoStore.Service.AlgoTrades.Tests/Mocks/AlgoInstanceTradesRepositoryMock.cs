@@ -1,4 +1,5 @@
-﻿using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Models;
+﻿using System;
+using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Models;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
 using Moq;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Tests.Mocks
         public static double MockedAmount => _mockedAmount;
         public static double MockedFee => _mockedFee;
         public static double MockedPrice => _mockedPrice;
+        public static string MockedDateString => _mockedDateString;
 
         private static readonly string _mockWalletId = "1ed49482-2108-4b39-97ed-61ca1f4df510";
         private static readonly string _mockInstanceId = "1xd49482-2108-4b39-97ed-61ca1f4df410";
@@ -24,6 +26,8 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Tests.Mocks
         private static readonly double _mockedAmount = 5;
         private static readonly double _mockedFee = 0.05;
         private static readonly double _mockedPrice = 5000;
+
+        private static readonly string _mockedDateString = "2018-05-03";
 
         public static IAlgoInstanceTradeRepository GetAlgoInstanceTradeRepositoryRepository()
         {
@@ -106,7 +110,8 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Tests.Mocks
                 Price = _mockedPrice,
                 WalletId = _mockWalletId,
                 InstanceId = _mockInstanceId,
-                OrderId = _mockOrderId
+                OrderId = _mockOrderId,
+                DateOfTrade = Convert.ToDateTime(_mockedDateString)
             };
         }
     }

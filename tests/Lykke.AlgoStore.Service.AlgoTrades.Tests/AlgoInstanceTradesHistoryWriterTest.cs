@@ -13,7 +13,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Tests
     {
         private static readonly string _data = "{\"Id\":\"201805031505_a5982bfa-0f6f-4aef-984b-8634bf40a1m6\"," +
                                                "\"ClientId\":\"" + AlgoInstanceTradesRepositoryMock.MockedWalletId + "\"," +
-                                               "\"DateTime\":\"2018-05-03T15:05:12.225Z\",\"IsHidden\":false," +
+                                               "\"DateTime\":\"" + AlgoInstanceTradesRepositoryMock.MockedDateString + "\",\"IsHidden\":false," +
                                                "\"LimitOrderId\":\"null\",\"MarketOrderId\":\"" + AlgoInstanceTradesRepositoryMock.MockedOrderId + "\"," +
                                                "\"Amount\":\"" + AlgoInstanceTradesRepositoryMock.MockedAmount + "\",\"AssetId\":\"USD\",\"AssetPairId\":\"BTCUSD\"," +
                                                "\"BlockChainHash\":null,\"Multisig\":null,\"TransactionId\":\"1ae4ec41-34f0-4773-be75-04215df3d55e\"," +
