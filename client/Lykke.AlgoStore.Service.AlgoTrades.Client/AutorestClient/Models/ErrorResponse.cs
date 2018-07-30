@@ -24,7 +24,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models
         /// <summary>
         /// Initializes a new instance of the ErrorResponse class.
         /// </summary>
-        public ErrorResponse(string errorMessage = default(string), IDictionary<string, IList<string>> modelErrors = default(IDictionary<string, IList<string>>))
+        public ErrorResponse(string errorMessage, IDictionary<string, IList<string>> modelErrors)
         {
             ErrorMessage = errorMessage;
             ModelErrors = modelErrors;

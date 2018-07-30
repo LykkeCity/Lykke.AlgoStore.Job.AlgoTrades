@@ -52,6 +52,25 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient
         Task<HttpOperationResponse<object>> GetAlgoInstanceTradesWithHttpMessagesAsync(int maxNumberToFetch, string instanceId = default(string), string tradedAssetId = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Returns Algo Instance trades
+        /// </summary>
+        /// <param name='fromMoment'>
+        /// </param>
+        /// <param name='toMoment'>
+        /// </param>
+        /// <param name='instanceId'>
+        /// </param>
+        /// <param name='tradedAssetId'>
+        /// </param>
+        /// <param name='customHeaders'>
+        /// The headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        Task<HttpOperationResponse<object>> GetAlgoInstanceTradesByPeriodWithHttpMessagesAsync(System.DateTime fromMoment, System.DateTime toMoment, string instanceId = default(string), string tradedAssetId = default(string), Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Checks service is alive
         /// </summary>
         /// <param name='customHeaders'>

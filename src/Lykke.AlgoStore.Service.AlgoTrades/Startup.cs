@@ -61,6 +61,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades
                 services.AddSwaggerGen(options =>
                 {
                     options.DefaultLykkeConfiguration("v1", "AlgoTrades API");
+                    options.SchemaFilter<NullableTypeSchemaFilter>();
                 });
 
                 var builder = new ContainerBuilder();

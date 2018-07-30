@@ -100,6 +100,34 @@
             A response object containing the response body and response headers.
             </return>
         </member>
+        <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.AlgoTradesAPI.GetAlgoInstanceTradesByPeriodWithHttpMessagesAsync(System.DateTime,System.DateTime,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Returns Algo Instance trades
+            </summary>
+            <param name='fromMoment'>
+            </param>
+            <param name='toMoment'>
+            </param>
+            <param name='instanceId'>
+            </param>
+            <param name='tradedAssetId'>
+            </param>
+            <param name='customHeaders'>
+            Headers that will be added to request.
+            </param>
+            <param name='cancellationToken'>
+            The cancellation token.
+            </param>
+            <exception cref="T:Microsoft.Rest.HttpOperationException">
+            Thrown when the operation returned an invalid status code
+            </exception>
+            <exception cref="T:Microsoft.Rest.SerializationException">
+            Thrown when unable to deserialize the response
+            </exception>
+            <return>
+            A response object containing the response body and response headers.
+            </return>
+        </member>
         <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.AlgoTradesAPI.IsAliveWithHttpMessagesAsync(System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
             <summary>
             Checks service is alive
@@ -147,6 +175,41 @@
             The operations group for this extension method.
             </param>
             <param name='maxNumberToFetch'>
+            </param>
+            <param name='instanceId'>
+            </param>
+            <param name='tradedAssetId'>
+            </param>
+            <param name='cancellationToken'>
+            The cancellation token.
+            </param>
+        </member>
+        <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.AlgoTradesAPIExtensions.GetAlgoInstanceTradesByPeriod(Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.IAlgoTradesAPI,System.DateTime,System.DateTime,System.String,System.String)">
+            <summary>
+            Returns Algo Instance trades
+            </summary>
+            <param name='operations'>
+            The operations group for this extension method.
+            </param>
+            <param name='fromMoment'>
+            </param>
+            <param name='toMoment'>
+            </param>
+            <param name='instanceId'>
+            </param>
+            <param name='tradedAssetId'>
+            </param>
+        </member>
+        <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.AlgoTradesAPIExtensions.GetAlgoInstanceTradesByPeriodAsync(Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.IAlgoTradesAPI,System.DateTime,System.DateTime,System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Returns Algo Instance trades
+            </summary>
+            <param name='operations'>
+            The operations group for this extension method.
+            </param>
+            <param name='fromMoment'>
+            </param>
+            <param name='toMoment'>
             </param>
             <param name='instanceId'>
             </param>
@@ -211,6 +274,25 @@
             The cancellation token.
             </param>
         </member>
+        <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.IAlgoTradesAPI.GetAlgoInstanceTradesByPeriodWithHttpMessagesAsync(System.DateTime,System.DateTime,System.String,System.String,System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
+            <summary>
+            Returns Algo Instance trades
+            </summary>
+            <param name='fromMoment'>
+            </param>
+            <param name='toMoment'>
+            </param>
+            <param name='instanceId'>
+            </param>
+            <param name='tradedAssetId'>
+            </param>
+            <param name='customHeaders'>
+            The headers that will be added to request.
+            </param>
+            <param name='cancellationToken'>
+            The cancellation token.
+            </param>
+        </member>
         <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.IAlgoTradesAPI.IsAliveWithHttpMessagesAsync(System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.List{System.String}},System.Threading.CancellationToken)">
             <summary>
             Checks service is alive
@@ -228,7 +310,7 @@
             class.
             </summary>
         </member>
-        <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.AlgoInstanceTradeResponseModel.#ctor(System.String,System.Nullable{System.Boolean},System.Nullable{System.Double},System.Nullable{System.Double},System.Nullable{System.Double},System.String,System.String,System.String,System.String,System.Nullable{System.DateTime})">
+        <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.AlgoInstanceTradeResponseModel.#ctor(System.String,System.String,System.String,System.String,System.String,System.Nullable{System.Boolean},System.Nullable{System.Double},System.Nullable{System.Double},System.Nullable{System.Double},System.Nullable{System.DateTime})">
             <summary>
             Initializes a new instance of the AlgoInstanceTradeResponseModel
             class.
@@ -297,7 +379,7 @@
             Initializes a new instance of the IsAliveResponse class.
             </summary>
         </member>
-        <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.IsAliveResponse.#ctor(System.Boolean,System.String,System.String,System.String,System.Collections.Generic.IList{Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.IssueIndicator})">
+        <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.IsAliveResponse.#ctor(System.String,System.String,System.String,System.Boolean,System.Collections.Generic.IList{Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.IssueIndicator})">
             <summary>
             Initializes a new instance of the IsAliveResponse class.
             </summary>
@@ -321,14 +403,6 @@
         <member name="P:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.IsAliveResponse.IssueIndicators">
             <summary>
             </summary>
-        </member>
-        <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.IsAliveResponse.Validate">
-            <summary>
-            Validate the object.
-            </summary>
-            <exception cref="T:Microsoft.Rest.ValidationException">
-            Thrown if validation fails
-            </exception>
         </member>
         <member name="M:Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models.IssueIndicator.#ctor">
             <summary>
