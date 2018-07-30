@@ -9,7 +9,6 @@ using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Mapper;
 using Lykke.Common.ApiLibrary.Middleware;
 using Lykke.Common.ApiLibrary.Swagger;
 using Lykke.Logs;
-using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 using Lykke.AlgoStore.Service.AlgoTrades.Infrastructure;
 using Lykke.AlgoStore.Service.AlgoTrades.Settings;
 using Lykke.AlgoStore.Service.AlgoTrades.Modules;
@@ -61,6 +60,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades
                 services.AddSwaggerGen(options =>
                 {
                     options.DefaultLykkeConfiguration("v1", "AlgoTrades API");
+                    options.SchemaFilter<NullableTypeSchemaFilter>();
                 });
 
                 var builder = new ContainerBuilder();

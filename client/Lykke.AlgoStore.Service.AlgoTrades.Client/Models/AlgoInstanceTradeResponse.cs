@@ -1,5 +1,6 @@
-﻿using Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models;
+﻿//using Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models;
 using System.Collections.Generic;
+using Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Client.Models
 {

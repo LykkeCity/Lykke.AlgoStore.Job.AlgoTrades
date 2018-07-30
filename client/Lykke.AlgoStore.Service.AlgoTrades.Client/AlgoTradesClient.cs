@@ -1,11 +1,11 @@
 ﻿using Common.Log;
-using Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient;
-using Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models;
 using Lykke.AlgoStore.Service.AlgoTrades.Client.Models;
 using Microsoft.Rest;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient;
+using Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Client
 {
@@ -59,6 +59,13 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Client
         {
             var response =
                 await _apiClient.GetAlgoInstanceTradesWithHttpMessagesAsync(instanceId: instanceId, tradedAssetId: tradedAssetId, maxNumberToFetch: maxNumberToFetch);
+
+            return PrepareResponseMultiple(response);
+        }
+
+        public async Task<AlgoInstanceTradeResponse> GetAlgoInstanceTradesByPeriod(string instanceId, string tradedAssetId, DateTime from, DateTime to)
+        {
+            var response = await _apiClient.GetAlgoInstanceTradesByPeriodWithHttpMessagesAsync(instanceId: instanceId, tradedAssetId: tradedAssetId, fromMoment: from, toMoment: to);
 
             return PrepareResponseMultiple(response);
         }

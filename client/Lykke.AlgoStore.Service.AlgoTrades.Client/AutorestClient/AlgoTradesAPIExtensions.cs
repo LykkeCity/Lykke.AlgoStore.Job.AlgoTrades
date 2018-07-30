@@ -56,6 +56,50 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient
             }
 
             /// <summary>
+            /// Returns Algo Instance trades
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='fromMoment'>
+            /// </param>
+            /// <param name='toMoment'>
+            /// </param>
+            /// <param name='instanceId'>
+            /// </param>
+            /// <param name='tradedAssetId'>
+            /// </param>
+            public static object GetAlgoInstanceTradesByPeriod(this IAlgoTradesAPI operations, System.DateTime fromMoment, System.DateTime toMoment, string instanceId = default(string), string tradedAssetId = default(string))
+            {
+                return operations.GetAlgoInstanceTradesByPeriodAsync(fromMoment, toMoment, instanceId, tradedAssetId).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Returns Algo Instance trades
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='fromMoment'>
+            /// </param>
+            /// <param name='toMoment'>
+            /// </param>
+            /// <param name='instanceId'>
+            /// </param>
+            /// <param name='tradedAssetId'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<object> GetAlgoInstanceTradesByPeriodAsync(this IAlgoTradesAPI operations, System.DateTime fromMoment, System.DateTime toMoment, string instanceId = default(string), string tradedAssetId = default(string), CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetAlgoInstanceTradesByPeriodWithHttpMessagesAsync(fromMoment, toMoment, instanceId, tradedAssetId, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
             /// Checks service is alive
             /// </summary>
             /// <param name='operations'>
