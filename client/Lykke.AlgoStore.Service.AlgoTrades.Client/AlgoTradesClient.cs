@@ -1,6 +1,4 @@
 ﻿using Common.Log;
-//using Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient;
-//using Lykke.AlgoStore.Service.AlgoTrades.Client.AutorestClient.Models;
 using Lykke.AlgoStore.Service.AlgoTrades.Client.Models;
 using Microsoft.Rest;
 using System;
