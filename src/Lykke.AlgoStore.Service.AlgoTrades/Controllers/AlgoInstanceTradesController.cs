@@ -8,11 +8,9 @@ using Lykke.Common.Api.Contract.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Common.Log;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Controllers
 {
