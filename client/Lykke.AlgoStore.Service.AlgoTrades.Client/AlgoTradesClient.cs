@@ -39,7 +39,9 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Client
                 {
                     Error = new ErrorModel
                     {
-                        Message = error.ErrorMessage
+                        Message = error.ErrorMessage,
+                        modelErrors = error.ModelErrors,
+                        StatusCode = serviceResponse.Response.StatusCode
                     }
                 };
             }
