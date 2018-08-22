@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lykke.AlgoStore.CSharp.AlgoTemplate.Models" Version="1.0.73" />
+    <PackageReference Include="Lykke.AlgoStore.CSharp.AlgoTemplate.Models" Version="1.0.75" />
     <PackageReference Include="Lykke.Common.ApiLibrary" Version="1.9.0" />
     <PackageReference Include="Lykke.Logs" Version="5.1.0" />
     <PackageReference Include="Lykke.Service.Session" Version="1.0.33" />

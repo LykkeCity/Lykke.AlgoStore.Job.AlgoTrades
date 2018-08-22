@@ -10,7 +10,9 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
+using Common.Log;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Controllers
 {
@@ -19,12 +21,14 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Controllers
     {
         private IAlgoInstanceTradeRepository _algoInstanceTradeRepository;
         private IAlgoInstanceTradesHistoryService _algoInstanceTradesHistoryService;
+        private ILog _log;
 
         public AlgoInstanceTradesController(IAlgoInstanceTradeRepository algoInstanceTradeRepository,
-            IAlgoInstanceTradesHistoryService algoInstanceTradesHistoryService)
+            IAlgoInstanceTradesHistoryService algoInstanceTradesHistoryService, ILog log)
         {
             _algoInstanceTradeRepository = algoInstanceTradeRepository;
             _algoInstanceTradesHistoryService = algoInstanceTradesHistoryService;
+            _log = log;
         }
 
         /// <summary>
@@ -56,6 +60,8 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Controllers
         [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetAlgoInstanceTradesByPeriod([FromQuery]string instanceId, [FromQuery]string tradedAssetId, [FromQuery]DateTime fromMoment, [FromQuery]DateTime toMoment)
         {
+            await _log.WriteInfoAsync(nameof(GetAlgoInstanceTradesByPeriod), instanceId, $"Get trades from {fromMoment} to {toMoment} ");
+
             if (String.IsNullOrWhiteSpace(instanceId))
             {
                 ModelState.AddModelError(nameof(instanceId), "Must not be empty.");
@@ -67,11 +73,29 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Controllers
                 return BadRequest(ModelState);
             }
 
-            var records = await _algoInstanceTradeRepository.GetInstaceTradesByTradedAssetAndPeriodAsync(instanceId, tradedAssetId, fromMoment.ToUniversalTime(), toMoment.ToUniversalTime());
+            var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
-            var result = await Task.WhenAll(records.Select(x => _algoInstanceTradesHistoryService.ExecuteAsync(x)));
+            try
+            {
+                var records = await _algoInstanceTradeRepository.GetInstaceTradesByTradedAssetAndPeriodAsync(instanceId, tradedAssetId, fromMoment.ToUniversalTime(), toMoment.ToUniversalTime(), cts.Token);
 
-            return Ok(result);
+                await _log.WriteInfoAsync(nameof(GetAlgoInstanceTradesByPeriod), instanceId, $"Found {records.Count()} trades from {fromMoment} to {toMoment} ");
+
+                var result = await Task.WhenAll(records.Select(x => _algoInstanceTradesHistoryService.ExecuteAsync(x))); 
+
+                return Ok(result);
+            } 
+            catch (TaskCanceledException)
+            {
+                var errorMsg = "Couldn't complete the request withing the time allowed, possibly due to high number of trades.";
+                await _log.WriteWarningAsync(nameof(GetAlgoInstanceTradesByPeriod), instanceId, $"Timout. Request for Get trades from {fromMoment} to {toMoment}. {errorMsg} ");
+                return BadRequest(new ErrorResponse().AddModelError("RequestTimeOut", errorMsg)); 
+            }
+            catch (Exception ex)
+            {
+                await _log.WriteErrorAsync(nameof(GetAlgoInstanceTradesByPeriod), instanceId, $"Timout. Request for Get trades from {fromMoment} to {toMoment}.", ex);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }
