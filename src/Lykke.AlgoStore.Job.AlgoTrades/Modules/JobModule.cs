@@ -7,6 +7,7 @@ using Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers;
 using Lykke.AlgoStore.Job.AlgoTrades.Settings;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 using Lykke.AlgoStore.Service.AlgoTrades.Services;
+using Lykke.Common.Log;
 using Lykke.SettingsReader;
 
 namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
@@ -14,20 +15,14 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
     public class JobModule : Module
     {
         private readonly IReloadingManager<AppSettings> _settings;
-        private readonly ILog _log;
 
-        public JobModule(IReloadingManager<AppSettings> settings, ILog log)
+        public JobModule(IReloadingManager<AppSettings> settings)
         {
             _settings = settings;
-            _log = log;
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterInstance(_log)
-                .As<ILog>()
-                .SingleInstance();
-
             RegisterRepositories(builder);
             RegisterRabbitMqSubscribers(builder);
             RegisterApplicationServices(builder);
@@ -35,18 +30,33 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
 
         private void RegisterRepositories(ContainerBuilder builder)
         {
-            builder.RegisterInstance<IAlgoInstanceTradeRepository>(CreateAlgoTradeRepository(
-                _settings.Nested(x => x.AlgoTradesJob.Db.LogsConnString), _log)).SingleInstance();
+            //builder.RegisterInstance<IAlgoInstanceTradeRepository>(CreateAlgoTradeRepository(
+            //    _settings.Nested(x => x.AlgoTradesJob.Db.LogsConnString), _log)).SingleInstance();
 
+            builder.Register(x =>
+                {
+                    var log = x.Resolve<ILogFactory>();
+                    var repository = CreateAlgoTradeRepository(
+                        _settings.Nested(y => y.AlgoTradesJob.Db.LogsConnString), log);
+
+                    return repository;
+                })
+                .As<IAlgoInstanceTradeRepository>()
+                .SingleInstance();
         }
 
         private void RegisterRabbitMqSubscribers(ContainerBuilder builder)
         {
-            builder.RegisterType<AlgoInstanceTradesSubscriber>()
+            //builder.RegisterType<AlgoInstanceTradesSubscriber>()
+            //    .As<IStartable>()
+            //    .AutoActivate()
+            //    .SingleInstance()
+            //    .WithParameter(TypedParameter.From(_settings.CurrentValue.AlgoTradesJob.Rabbit));
+
+            builder.RegisterType<MatchingEngineOrderEventsSubscriber>()
                 .As<IStartable>()
                 .AutoActivate()
-                .SingleInstance()
-                .WithParameter(TypedParameter.From(_settings.CurrentValue.AlgoTradesJob.Rabbit));
+                .SingleInstance();
         }
 
         private void RegisterApplicationServices(ContainerBuilder builder)
@@ -57,10 +67,11 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
         }
 
         private static AlgoInstanceTradeRepository CreateAlgoTradeRepository(IReloadingManager<string> connectionString,
-            ILog log)
+            ILogFactory logFactory)
         {
             return new AlgoInstanceTradeRepository(
-                AzureTableStorage<AlgoInstanceTradeEntity>.Create(connectionString, AlgoInstanceTradeRepository.TableName, log));
+                AzureTableStorage<AlgoInstanceTradeEntity>.Create(connectionString,
+                    AlgoInstanceTradeRepository.TableName, logFactory));
         }
     }
 }

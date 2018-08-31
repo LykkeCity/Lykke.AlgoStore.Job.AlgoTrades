@@ -7,6 +7,8 @@ using Lykke.Service.OperationsRepository.Contract.History;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
+using Lykke.MatchingEngine.Connector.Models.Events;
+using OrderType = Lykke.MatchingEngine.Connector.Models.Events.OrderType;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Services
 {
@@ -56,6 +58,20 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
                     await _algoInstanceTradeRepository.SaveAlgoInstanceTradeAsync(trade);
                 }
             }
+        }
+
+        public async Task SaveAsync(Order order)
+        {
+            //Check if this is a limit order
+            if(order.OrderType != OrderType.Limit)
+                return;
+
+            //REMARK: Check in MEA how do we save limit orders and how we can identity it
+            //similar to the code from above _algoInstanceTradeRepository.GetAlgoInstanceOrderAsync
+
+            //TODO: Map order to AlgoInstanceTrade
+            var trade = new AlgoInstanceTrade();
+            await _algoInstanceTradeRepository.SaveAlgoInstanceTradeAsync(trade);
         }
     }
 }
