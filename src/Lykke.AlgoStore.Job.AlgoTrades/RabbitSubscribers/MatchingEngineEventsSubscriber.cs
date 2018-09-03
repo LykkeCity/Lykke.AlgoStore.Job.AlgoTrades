@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Common;
+using Lykke.AlgoStore.Job.AlgoTrades.Settings.JobSettings;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 using Lykke.Common.Log;
 using Lykke.MatchingEngine.Connector.Models.Events;
@@ -16,23 +17,26 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
         private readonly ILogFactory _logFactory;
         private RabbitMqSubscriber<ExecutionEvent> _subscriber;
         private readonly IAlgoInstanceTradesHistoryWriter _algoTradesHistoryWriter;
+        private readonly MatchingEngineRabbitMqSettings _rabbitSettings;
 
         public MatchingEngineOrderEventsSubscriber(ILogFactory logFactory,
-            IAlgoInstanceTradesHistoryWriter algoTradesHistoryWriter)
+            IAlgoInstanceTradesHistoryWriter algoTradesHistoryWriter,
+            MatchingEngineRabbitMqSettings rabbitSettings)
         {
             _logFactory = logFactory;
             _algoTradesHistoryWriter = algoTradesHistoryWriter;
+            _rabbitSettings = rabbitSettings;
         }
 
         public void Start()
         {
             var settings = new RabbitMqSubscriptionSettings
             {
-                ConnectionString = "amqp://lykke.history:lykke.history@rabbit-me.lykke-me.svc.cluster.local:5672",
-                ExchangeName = "lykke.spot.matching.engine.out.events",
-                QueueName = "lykke.algo-store.job.trades.Order",
-                RoutingKey = "4", //order
-                IsDurable = true
+                ConnectionString = _rabbitSettings.ConnectionString,
+                ExchangeName = _rabbitSettings.ExchangeName,
+                QueueName = _rabbitSettings.QueueName,
+                RoutingKey = _rabbitSettings.RoutingKey, //4 - order
+                IsDurable = _rabbitSettings.IsDurable
             };
 
             _subscriber = new RabbitMqSubscriber<ExecutionEvent>(
@@ -53,12 +57,6 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
         {
             if (!executionEvent.Orders.Any())
                 return;
-
-            //foreach (var order in executionEvent.Orders)
-            //{
-            //    //REMARK: Check if this will work with both market and limit orders
-            //    await _algoTradesHistoryWriter.SaveAsync(order);
-            //}
 
             var tasks = executionEvent.Orders.Select(x => _algoTradesHistoryWriter.SaveAsync(x));
 

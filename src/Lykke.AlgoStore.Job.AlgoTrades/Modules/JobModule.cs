@@ -56,7 +56,8 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
             builder.RegisterType<MatchingEngineOrderEventsSubscriber>()
                 .As<IStartable>()
                 .AutoActivate()
-                .SingleInstance();
+                .SingleInstance()
+                .WithParameter(TypedParameter.From(_settings.CurrentValue.AlgoTradesJob.MatchingEngineRabbitMq));
         }
 
         private void RegisterApplicationServices(ContainerBuilder builder)
