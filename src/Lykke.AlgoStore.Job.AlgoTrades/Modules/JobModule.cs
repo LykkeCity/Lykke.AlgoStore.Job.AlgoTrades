@@ -42,6 +42,17 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
                 })
                 .As<IAlgoInstanceTradeRepository>()
                 .SingleInstance();
+
+            builder.Register(x =>
+                {
+                    var log = x.Resolve<ILogFactory>();
+                    var repository = CreateAlgoInstanceRepository(
+                        _settings.Nested(y => y.AlgoTradesJob.Db.LogsConnString), log);
+
+                    return repository;
+                })
+                .As<IAlgoClientInstanceRepository>()
+                .SingleInstance();
         }
 
         private void RegisterRabbitMqSubscribers(ContainerBuilder builder)
