@@ -9,7 +9,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Tests
 {
     public class AlgoInstanceTradesHistoryWriterTest
     {
-        private static readonly string _data = "{\"Id\":\"201805031505_a5982bfa-0f6f-4aef-984b-8634bf40a1m6\"," +
+        private static readonly string Data = "{\"Id\":\"201805031505_a5982bfa-0f6f-4aef-984b-8634bf40a1m6\"," +
                                                "\"ClientId\":\"" + AlgoInstanceTradesRepositoryMock.MockedWalletId + "\"," +
                                                "\"DateTime\":\"" + AlgoInstanceTradesRepositoryMock.MockedDateString + "\",\"IsHidden\":false," +
                                                "\"LimitOrderId\":\"null\",\"MarketOrderId\":\"" + AlgoInstanceTradesRepositoryMock.MockedOrderId + "\"," +
@@ -27,7 +27,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Tests
                 DateTime = DateTime.Now.Date,
                 ClientId = AlgoInstanceTradesRepositoryMock.MockedWalletId,
                 Amount = 5,
-                Data = _data
+                Data = Data
             };
         }
 
