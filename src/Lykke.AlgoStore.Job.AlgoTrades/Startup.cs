@@ -137,7 +137,7 @@ namespace Lykke.AlgoStore.Job.AlgoTrades
             {
                 if (_log != null)
                 {
-                    _log.Critical(nameof(Startup), ex, "", nameof(CleanUp));
+                    _log.Critical(nameof(CleanUp), ex, "", nameof(CleanUp));
 
                     (_log as IDisposable)?.Dispose();
                 }
