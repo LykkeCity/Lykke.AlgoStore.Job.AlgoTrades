@@ -29,9 +29,6 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
 
         private void RegisterRepositories(ContainerBuilder builder)
         {
-            //builder.RegisterInstance<IAlgoInstanceTradeRepository>(CreateAlgoTradeRepository(
-            //    _settings.Nested(x => x.AlgoTradesJob.Db.LogsConnString), _log)).SingleInstance();
-
             builder.Register(x =>
                 {
                     var log = x.Resolve<ILogFactory>();
@@ -46,11 +43,11 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
 
         private void RegisterRabbitMqSubscribers(ContainerBuilder builder)
         {
-            //builder.RegisterType<AlgoInstanceTradesSubscriber>()
-            //    .As<IStartable>()
-            //    .AutoActivate()
-            //    .SingleInstance()
-            //    .WithParameter(TypedParameter.From(_settings.CurrentValue.AlgoTradesJob.Rabbit));
+            builder.RegisterType<AlgoInstanceTradesSubscriber>()
+                .As<IStartable>()
+                .AutoActivate()
+                .SingleInstance()
+                .WithParameter(TypedParameter.From(_settings.CurrentValue.AlgoTradesJob.Rabbit));
 
             builder.RegisterType<MatchingEngineOrderEventsSubscriber>()
                 .As<IStartable>()

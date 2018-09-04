@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Common;
-using Common.Log;
 using Lykke.AlgoStore.Job.AlgoTrades.Settings.JobSettings;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 using Lykke.RabbitMqBroker;
@@ -8,6 +7,7 @@ using Lykke.RabbitMqBroker.Subscriber;
 using Lykke.Service.OperationsRepository.Contract.History;
 using System;
 using System.Threading.Tasks;
+using Lykke.Common.Log;
 
 namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
 {
@@ -17,18 +17,18 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
     public class AlgoInstanceTradesSubscriber : IStartable, IStopable
     {
         private readonly IAlgoInstanceTradesHistoryWriter _algoTradesHistoryWriter;
-        private readonly ILog _log;
+        private readonly ILogFactory _logFactory;
         private readonly RabbitMqSettings _rabbitSettings;
 
         private RabbitMqSubscriber<OperationsHistoryMessage> _subscriber;
 
         public AlgoInstanceTradesSubscriber(
             IAlgoInstanceTradesHistoryWriter algoTradesHistoryWriter,
-            ILog log,
+            ILogFactory logFactory,
             RabbitMqSettings rabbitSettings)
         {
             _algoTradesHistoryWriter = algoTradesHistoryWriter;
-            _log = log;
+            _logFactory = logFactory;
             _rabbitSettings = rabbitSettings;
         }
 
@@ -38,15 +38,17 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
                                     _rabbitSettings.ExchangeOperationsHistory, _rabbitSettings.QueueAlgoTradesUpdater);
             settings.MakeDurable();
 
-            _subscriber = new RabbitMqSubscriber<OperationsHistoryMessage>(settings,
-                    new ResilientErrorHandlingStrategy(_log, settings,
+            _subscriber = new RabbitMqSubscriber<OperationsHistoryMessage>(
+                    _logFactory,
+                    settings,
+                    new ResilientErrorHandlingStrategy(
+                        _logFactory, settings,
                         retryTimeout: TimeSpan.FromSeconds(10),
-                        next: new DeadQueueErrorHandlingStrategy(_log, settings)))
+                        next: new DeadQueueErrorHandlingStrategy(_logFactory, settings)))
                 .SetMessageDeserializer(new JsonMessageDeserializer<OperationsHistoryMessage>())
                 .SetMessageReadStrategy(new MessageReadQueueStrategy())
                 .Subscribe(ProcessMessageAsync)
                 .CreateDefaultBinding()
-                .SetLogger(_log)
                 .Start();
         }
 

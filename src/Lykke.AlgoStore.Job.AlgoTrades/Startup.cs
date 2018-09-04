@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Threading.Tasks;
 using AutoMapper;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Mapper;
 using Lykke.Common;
@@ -88,7 +87,7 @@ namespace Lykke.AlgoStore.Job.AlgoTrades
             }
             catch (Exception ex)
             {
-                _log?.WriteFatalError(nameof(Startup), nameof(ConfigureServices), ex);
+                _log.Critical(nameof(Startup), ex, nameof(ConfigureServices));
                 throw;
             }
         }
@@ -117,23 +116,20 @@ namespace Lykke.AlgoStore.Job.AlgoTrades
                 });
                 app.UseStaticFiles();
 
-                appLifetime.ApplicationStopped.Register(() => CleanUp().GetAwaiter().GetResult());
+                appLifetime.ApplicationStopped.Register(CleanUp);
             }
             catch (Exception ex)
             {
-                _log?.WriteFatalError(nameof(Startup), nameof(Configure), ex);
+                _log?.Critical(nameof(Startup), ex, nameof(Configure));
                 throw;
             }
         }
 
-        private async Task CleanUp()
+        private void CleanUp()
         {
             try
             {
-                if (_log != null)
-                {
-                    await _log.WriteMonitorAsync("", Program.EnvInfo, "Terminating");
-                }
+                _log?.Info(nameof(CleanUp), "Terminating", Program.EnvInfo);
 
                 ApplicationContainer.Dispose();
             }
@@ -141,7 +137,8 @@ namespace Lykke.AlgoStore.Job.AlgoTrades
             {
                 if (_log != null)
                 {
-                    await _log.WriteFatalErrorAsync(nameof(Startup), nameof(CleanUp), "", ex);
+                    _log.Critical(nameof(Startup), ex, "", nameof(CleanUp));
+
                     (_log as IDisposable)?.Dispose();
                 }
                 throw;
