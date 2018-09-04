@@ -1,5 +1,4 @@
-﻿using Common.Log;
-using Lykke.AlgoStore.Service.AlgoTrades.Controllers;
+﻿using Lykke.AlgoStore.Service.AlgoTrades.Controllers;
 using Lykke.Common.Log;
 using Moq;
 
