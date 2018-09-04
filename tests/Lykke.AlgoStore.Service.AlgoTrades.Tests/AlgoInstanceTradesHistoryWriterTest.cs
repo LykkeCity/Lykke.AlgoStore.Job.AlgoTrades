@@ -1,8 +1,6 @@
-﻿using Common.Log;
-using Lykke.AlgoStore.Service.AlgoTrades.Services;
+﻿using Lykke.AlgoStore.Service.AlgoTrades.Services;
 using Lykke.AlgoStore.Service.AlgoTrades.Tests.Mocks;
 using Lykke.Service.OperationsRepository.Contract.History;
-using Moq;
 using System;
 using System.Threading.Tasks;
 using Xunit;

@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using AzureStorage.Tables;
-using Common.Log;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Entities;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
 using Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers;
