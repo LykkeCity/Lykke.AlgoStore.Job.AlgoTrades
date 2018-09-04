@@ -1,5 +1,6 @@
 ﻿using Common.Log;
 using Lykke.AlgoStore.Service.AlgoTrades.Controllers;
+using Lykke.Common.Log;
 using Moq;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Tests.Mocks
@@ -8,10 +9,11 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Tests.Mocks
     {
         public static AlgoInstanceTradesController GetControllerInstance()
         {
-            var repoMock = new Mock<ILog>();
-            AlgoInstanceTradesController controller = new AlgoInstanceTradesController(
-                                                AlgoInstanceTradesRepositoryMock.GetAlgoInstanceTradeRepositoryRepository(),
-                                                AlgoInstanceTradesHistoryServiceMock.GetAlgoInstanceTradesHistoryService(), repoMock.Object);
+            var logFactoryMock = new Mock<ILogFactory>();
+            var controller = new AlgoInstanceTradesController(
+                AlgoInstanceTradesRepositoryMock.GetAlgoInstanceTradeRepositoryRepository(),
+                AlgoInstanceTradesHistoryServiceMock.GetAlgoInstanceTradesHistoryService(), logFactoryMock.Object);
+
             return controller;
         }
     }
