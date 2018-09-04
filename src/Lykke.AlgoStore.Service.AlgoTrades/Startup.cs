@@ -63,9 +63,12 @@ namespace Lykke.AlgoStore.Service.AlgoTrades
                     options.SchemaFilter<NullableTypeSchemaFilter>();
                 });
 
-                var settingsManager = Configuration.LoadSettings<AppSettings>(x => (
-                    x.SlackNotifications.AzureQueue.ConnectionString, x.SlackNotifications.AzureQueue.QueueName,
-                    $"{AppEnvironment.Name} {AppEnvironment.Version}"));
+                var settingsManager = Configuration.LoadSettings<AppSettings>(x =>
+                {
+                    x.SetConnString(y => y.SlackNotifications.AzureQueue.ConnectionString);
+                    x.SetQueueName(y => y.SlackNotifications.AzureQueue.QueueName);
+                    x.SenderName = $"{AppEnvironment.Name} {AppEnvironment.Version}";
+                });
 
                 var appSettings = settingsManager.CurrentValue;
 

@@ -1,11 +1,7 @@
 ﻿using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Models;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
-using Lykke.Service.OperationsRepository.Contract;
 using Lykke.Service.OperationsRepository.Contract.Cash;
-using Lykke.Service.OperationsRepository.Contract.History;
-using Newtonsoft.Json;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Lykke.MatchingEngine.Connector.Models.Events;
@@ -25,42 +21,26 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
         /// <summary>
         /// Save algo instance trade details when there is a new trade for existing order/row in AlgoStore database.
         /// </summary>
-        /// <param name="historyRecord">Historical data which comes from RabbitMQ exchange</param>
-        public async Task SaveAsync(OperationsHistoryMessage historyRecord)
+        /// <param name="instanceTrade">Historical data which comes from RabbitMQ exchange</param>
+        public async Task SaveAsync(ClientTradeDto clientTrade, AlgoInstanceTrade algoInstanceOrder)
         {
-            var operationType = (OperationType) Enum.Parse(typeof(OperationType), historyRecord.OpType);
-
-            if (operationType == OperationType.ClientTrade)
+            var trade = new AlgoInstanceTrade()
             {
-                var clientTrade = JsonConvert.DeserializeObject<ClientTradeDto>(historyRecord.Data);
+                InstanceId = algoInstanceOrder.InstanceId,
+                AssetId = clientTrade.AssetId,
+                AssetPairId = clientTrade.AssetPairId,
+                Fee = clientTrade.FeeSize,
+                Amount = clientTrade.Amount,
+                WalletId = algoInstanceOrder.WalletId,
+                OrderId = algoInstanceOrder.OrderId,
+                IsBuy = algoInstanceOrder.IsBuy,
+                Price = algoInstanceOrder.Price,
+                DateOfTrade = clientTrade.DateTime
+            };
 
-                AlgoInstanceTrade algoInstanceOrder = null;
-
-                if (!string.IsNullOrEmpty(clientTrade.MarketOrderId))
-                    algoInstanceOrder =
-                        await _algoInstanceTradeRepository.GetAlgoInstanceOrderAsync(clientTrade.MarketOrderId,
-                            clientTrade.ClientId);
-
-                if (algoInstanceOrder != null)
-                {
-                    AlgoInstanceTrade trade = new AlgoInstanceTrade()
-                    {
-                        InstanceId = algoInstanceOrder.InstanceId,
-                        AssetId = clientTrade.AssetId,
-                        AssetPairId = clientTrade.AssetPairId,
-                        Fee = clientTrade.FeeSize,
-                        Amount = clientTrade.Amount,
-                        WalletId = algoInstanceOrder.WalletId,
-                        OrderId = algoInstanceOrder.OrderId,
-                        IsBuy = algoInstanceOrder.IsBuy,
-                        Price = algoInstanceOrder.Price,
-                        DateOfTrade = clientTrade.DateTime
-                    };
-
-                    await _algoInstanceTradeRepository.SaveAlgoInstanceTradeAsync(trade);
-                }
-            }
+            await _algoInstanceTradeRepository.SaveAlgoInstanceTradeAsync(trade);
         }
+
 
         public async Task SaveAsync(Order order)
         {
@@ -93,7 +73,9 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
                     Fee = orderTrade.Fees.Any()
                         ? orderTrade.Fees.Where(x => !string.IsNullOrEmpty(x.Volume)).Sum(x => double.Parse(x.Volume))
                         : (double?) null,
-                    Amount = string.IsNullOrEmpty(orderTrade.BaseVolume) ? (double?)null : double.Parse(orderTrade.BaseVolume),
+                    Amount = string.IsNullOrEmpty(orderTrade.BaseVolume)
+                        ? (double?) null
+                        : double.Parse(orderTrade.BaseVolume),
                     WalletId = algoInstanceOrder.WalletId,
                     OrderId = algoInstanceOrder.OrderId,
                     IsBuy = algoInstanceOrder.IsBuy,
