@@ -1,5 +1,4 @@
-﻿using Common.Log;
-using Lykke.AlgoStore.Service.AlgoTrades.Client.Models;
+﻿using Lykke.AlgoStore.Service.AlgoTrades.Client.Models;
 using Microsoft.Rest;
 using System;
 using System.Collections.Generic;
@@ -11,12 +10,10 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Client
 {
     public class AlgoTradesClient : IAlgoTradesClient, IDisposable
     {
-        private readonly ILog _log;
         private AlgoTradesAPI _apiClient;
 
-        public AlgoTradesClient(string serviceUrl, ILog log)
+        public AlgoTradesClient(string serviceUrl)
         {
-            _log = log;
             _apiClient = new AlgoTradesAPI(new Uri(serviceUrl));
         }
 
@@ -40,7 +37,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Client
                     Error = new ErrorModel
                     {
                         Message = error.ErrorMessage,
-                        modelErrors = error.ModelErrors,
+                        ModelErrors = error.ModelErrors,
                         StatusCode = serviceResponse.Response.StatusCode
                     }
                 };

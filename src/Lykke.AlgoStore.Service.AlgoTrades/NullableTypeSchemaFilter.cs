@@ -19,7 +19,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades
                 foreach (var prop in model.Properties)
                 {
                     var schema = prop.Value;
-                    if (schema.Extensions != null && schema.Extensions.ContainsKey("x-nullable") && (bool)schema.Extensions["x-nullable"] == true)
+                    if (schema.Extensions != null && schema.Extensions.ContainsKey("x-nullable") && (bool)schema.Extensions["x-nullable"])
                     {
                         model.Required.Remove(prop.Key);
                     }

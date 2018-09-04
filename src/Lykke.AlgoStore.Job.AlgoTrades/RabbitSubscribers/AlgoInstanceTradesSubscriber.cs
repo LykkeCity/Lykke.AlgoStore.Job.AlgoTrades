@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Common;
-using Common.Log;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
 using Lykke.AlgoStore.Job.AlgoTrades.Settings.JobSettings;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
@@ -12,6 +11,7 @@ using Lykke.Service.OperationsRepository.Contract.History;
 using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
+using Lykke.Common.Log;
 
 namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
 {
@@ -24,7 +24,7 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
         private readonly IAlgoInstanceTradeRepository _instanceTradeRepository;
         private readonly IAlgoInstanceTradesHistoryWriter _algoTradesHistoryWriter;
         private readonly IAlgoInstanceTradesCountUpdater _tradesCountUpdater;
-        private readonly ILog _log;
+        private readonly ILogFactory _logFactory;
         private readonly RabbitMqSettings _rabbitSettings;
 
         private RabbitMqSubscriber<OperationsHistoryMessage> _subscriber;
@@ -33,13 +33,13 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
             IAlgoInstanceTradeRepository instanceTradeRepository,
             IAlgoInstanceTradesHistoryWriter algoTradesHistoryWriter,
             IAlgoInstanceTradesCountUpdater tradesCountUpdater,
-            ILog log,
+            ILogFactory logFactory,
             RabbitMqSettings rabbitSettings)
         {
             _instanceTradeRepository = instanceTradeRepository;
             _algoTradesHistoryWriter = algoTradesHistoryWriter;
             _tradesCountUpdater = tradesCountUpdater;
-            _log = log;
+            _logFactory = logFactory;
             _rabbitSettings = rabbitSettings;
         }
 
@@ -50,15 +50,17 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
                                     _rabbitSettings.QueueAlgoTradesUpdater);
             settings.MakeDurable();
 
-            _subscriber = new RabbitMqSubscriber<OperationsHistoryMessage>(settings,
-                    new ResilientErrorHandlingStrategy(_log, settings,
+            _subscriber = new RabbitMqSubscriber<OperationsHistoryMessage>(
+                    _logFactory,
+                    settings,
+                    new ResilientErrorHandlingStrategy(
+                        _logFactory, settings,
                         retryTimeout: TimeSpan.FromSeconds(10),
-                        next: new DeadQueueErrorHandlingStrategy(_log, settings)))
+                        next: new DeadQueueErrorHandlingStrategy(_logFactory, settings)))
                 .SetMessageDeserializer(new JsonMessageDeserializer<OperationsHistoryMessage>())
                 .SetMessageReadStrategy(new MessageReadQueueStrategy())
                 .Subscribe(ProcessMessageAsync)
                 .CreateDefaultBinding()
-                .SetLogger(_log)
                 .Start();
         }
 

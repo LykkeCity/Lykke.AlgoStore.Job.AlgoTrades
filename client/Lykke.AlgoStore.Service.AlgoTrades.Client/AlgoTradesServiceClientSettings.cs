@@ -1,6 +1,4 @@
-using System;
-
-namespace Lykke.AlgoStore.Service.AlgoTrades.Client 
+﻿namespace Lykke.AlgoStore.Service.AlgoTrades.Client 
 {
     public class AlgoTradesServiceClientSettings 
     {

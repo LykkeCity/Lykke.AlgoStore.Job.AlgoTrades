@@ -24,8 +24,10 @@
     <PackageReference Include="Lykke.AlgoStore.Service.Statistics.Client" Version="1.0.6" />
     <PackageReference Include="Lykke.Common" Version="7.0.4" />
     <PackageReference Include="Lykke.Common.ApiLibrary" Version="1.10.1" />
-    <PackageReference Include="Lykke.Logs" Version="5.1.0" />
+    <PackageReference Include="Lykke.Logs" Version="5.2.0" />
     <PackageReference Include="Lykke.RabbitMqBroker" Version="7.3.0" />
+    <PackageReference Include="Lykke.MatchingEngineConnector" Version="8.3.0" />
+    <PackageReference Include="Lykke.Sdk" Version="5.2.2" />
     <PackageReference Include="Lykke.Service.OperationsRepository.Contract" Version="1.0.13" />
     <PackageReference Include="Lykke.SettingsReader" Version="4.0.1" />
     <PackageReference Include="Lykke.SlackNotification.AzureQueue" Version="2.0.5" />

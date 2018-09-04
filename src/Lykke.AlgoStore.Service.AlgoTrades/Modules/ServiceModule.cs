@@ -1,8 +1,6 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Common;
-using Common.Log;
-using Lykke.AlgoStore.CSharp.AlgoTemplate.Models;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 using Lykke.AlgoStore.Service.AlgoTrades.Services;
@@ -13,30 +11,27 @@ using Lykke.SettingsReader;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
+using AzureStorage.Tables;
+using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Entities;
+using Lykke.Common.Log;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Modules
 {
     public class ServiceModule : Module
     {
         private readonly IReloadingManager<AppSettings> _settings;
-        private readonly ILog _log;
         // NOTE: you can remove it if you don't need to use IServiceCollection extensions to register service specific dependencies
         private readonly IServiceCollection _services;
 
-        public ServiceModule(IReloadingManager<AppSettings> settings, ILog log)
+        public ServiceModule(IReloadingManager<AppSettings> settings)
         {
             _settings = settings;
-            _log = log;
 
             _services = new ServiceCollection();
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterInstance(_log)
-                  .As<ILog>()
-                  .SingleInstance();
-
             RegisterRepositories(builder);
 
             RegisterApplicationServices(builder);
@@ -50,8 +45,16 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Modules
 
         private void RegisterRepositories(ContainerBuilder builder)
         {
-            builder.RegisterInstance<IAlgoInstanceTradeRepository>(AzureRepoFactories.CreateAlgoTradeRepository(
-                _settings.Nested(x => x.AlgoTradesService.Db.LogsConnString), _log)).SingleInstance();
+            builder.Register(x =>
+                {
+                    var log = x.Resolve<ILogFactory>();
+                    var repository = CreateAlgoTradeRepository(
+                        _settings.Nested(y => y.AlgoTradesService.Db.LogsConnString), log);
+
+                    return repository;
+                })
+                .As<IAlgoInstanceTradeRepository>()
+                .SingleInstance();
         }
 
         private void RegisterApplicationServices(ContainerBuilder builder)
@@ -79,6 +82,14 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Modules
                         (await ctx.Resolve<IAssetsService>().AssetPairGetAllAsync())
                         .ToDictionary(itm => itm.Id));
             }).SingleInstance();
+        }
+
+        private static AlgoInstanceTradeRepository CreateAlgoTradeRepository(IReloadingManager<string> connectionString,
+            ILogFactory logFactory)
+        {
+            return new AlgoInstanceTradeRepository(
+                AzureTableStorage<AlgoInstanceTradeEntity>.Create(connectionString,
+                    AlgoInstanceTradeRepository.TableName, logFactory));
         }
     }
 }
