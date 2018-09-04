@@ -47,10 +47,8 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
         {
             var settings = RabbitMqSubscriptionSettings.CreateForSubscriber(_rabbitSettings.ConnectionString,
                                     _rabbitSettings.ExchangeOperationsHistory, 
-                                    _rabbitSettings.QueueAlgoTradesUpdater + ".devtest");
-
-            settings.IsDurable = false;
-            settings.DeadLetterExchangeName = null;
+                                    _rabbitSettings.QueueAlgoTradesUpdater);
+            settings.MakeDurable();
 
             _subscriber = new RabbitMqSubscriber<OperationsHistoryMessage>(settings,
                     new ResilientErrorHandlingStrategy(_log, settings,
