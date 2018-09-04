@@ -1,5 +1,4 @@
 ﻿using Common;
-using Common.Log;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Models;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Domain;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
@@ -14,16 +13,13 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
     {
         private readonly CachedDataDictionary<string, Asset> _assetsCache;
         private readonly CachedDataDictionary<string, AssetPair> _assetPairsCache;
-        private readonly ILog _log;
 
         public AlgoInstanceTradesHistoryService(
             CachedDataDictionary<string, Asset> assetsCache,
-            CachedDataDictionary<string, AssetPair> assetPairsCache,
-            ILog log)
+            CachedDataDictionary<string, AssetPair> assetPairsCache)
         {
             _assetsCache = assetsCache ?? throw new ArgumentNullException(nameof(assetsCache));
             _assetPairsCache = assetPairsCache ?? throw new ArgumentNullException(nameof(assetPairsCache));
-            _log = log ?? throw new ArgumentNullException(nameof(log));
         }
 
         /// <summary>
