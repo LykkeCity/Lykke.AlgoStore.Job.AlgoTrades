@@ -2,6 +2,7 @@
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 using Lykke.AlgoStore.Service.Statistics.Client;
+using Lykke.Service.OperationsRepository.Contract.Cash;
 using System.Threading.Tasks;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Services
@@ -19,10 +20,14 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
             _clientInstanceRepository = clientInstanceRepository;
         }
 
-        public async Task IncreaseInstanceTradeCountAsync(AlgoInstanceTrade instanceTrade)
+        public async Task IncreaseInstanceTradeCountAsync(
+            ClientTradeDto clientTrade,
+            AlgoInstanceTrade instanceTrade)
         {
             var instance = await _clientInstanceRepository
                 .GetAlgoInstanceDataByWalletIdAsync(instanceTrade.WalletId, instanceTrade.InstanceId);
+
+            if (instance.TradedAssetId != clientTrade.AssetId) return;
 
             await _statisticsClient.IncreaseTotalTradesAsync(instance.AuthToken.ToBearerToken());
         }
