@@ -3,6 +3,9 @@ using Lykke.AlgoStore.Service.AlgoTrades.Tests.Mocks;
 using Lykke.Service.OperationsRepository.Contract.Cash;
 using System;
 using System.Threading.Tasks;
+using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Models;
+using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
+using Moq;
 using Xunit;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Tests
@@ -43,7 +46,12 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Tests
             var algoInstanceTradeRepo = AlgoInstanceTradesRepositoryMock.GetAlgoInstanceTradeRepositoryRepository_ForHistoryWriter();
             var order = await algoInstanceTradeRepo.GetAlgoInstanceOrderAsync(message.MarketOrderId, message.ClientId);
 
-            var writer = new AlgoInstanceTradesHistoryWriter(algoInstanceTradeRepo);
+            var pubMock = new Mock<IOrderUpdatePublisher>();
+
+            pubMock.Setup(r => r.Publish(It.IsAny<AlgoInstanceTrade>()))
+                .Returns(Task.CompletedTask);
+
+            var writer = new AlgoInstanceTradesHistoryWriter(algoInstanceTradeRepo, pubMock.Object);
 
             await writer.SaveAsync(message, order);
         }

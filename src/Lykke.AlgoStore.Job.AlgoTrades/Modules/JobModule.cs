@@ -27,6 +27,7 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
 
             RegisterRepositories(builder);
             RegisterRabbitMqSubscribers(builder);
+            RegisterRedisPublisher(builder);
             RegisterApplicationServices(builder);
         }
 
@@ -68,6 +69,15 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
                 .AutoActivate()
                 .SingleInstance()
                 .WithParameter(TypedParameter.From(_settings.CurrentValue.AlgoTradesJob.MatchingEngineRabbitMq));
+        }
+
+        private void RegisterRedisPublisher(ContainerBuilder builder)
+        {
+            builder.RegisterType<RedisOrderUpdatePublisher>()
+                .WithParameter("endPoint", _settings.CurrentValue.AlgoTradesJob.Redis.EndPoint)
+                .WithParameter("password", _settings.CurrentValue.AlgoTradesJob.Redis.Password)
+                .SingleInstance()
+                .As<IOrderUpdatePublisher>();
         }
 
         private void RegisterApplicationServices(ContainerBuilder builder)
