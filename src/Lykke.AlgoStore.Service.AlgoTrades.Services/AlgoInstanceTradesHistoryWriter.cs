@@ -1,4 +1,5 @@
-﻿using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Models;
+﻿using System;
+using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Models;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Repositories;
 using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 using Lykke.Service.OperationsRepository.Contract.Cash;
@@ -12,10 +13,12 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
     public class AlgoInstanceTradesHistoryWriter : IAlgoInstanceTradesHistoryWriter
     {
         private readonly IAlgoInstanceTradeRepository _algoInstanceTradeRepository;
+        private readonly IOrderUpdatePublisher _orderUpdatePublisher;
 
-        public AlgoInstanceTradesHistoryWriter(IAlgoInstanceTradeRepository algoInstanceTradeRepository)
+        public AlgoInstanceTradesHistoryWriter(IAlgoInstanceTradeRepository algoInstanceTradeRepository, IOrderUpdatePublisher orderUpdatePublisher)
         {
             _algoInstanceTradeRepository = algoInstanceTradeRepository;
+            _orderUpdatePublisher = orderUpdatePublisher;
         }
 
         /// <summary>
@@ -58,8 +61,11 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
             if (algoInstanceOrder == null)
                 return;
 
+            algoInstanceOrder.OrderStatus = Enum.TryParse<CSharp.AlgoTemplate.Models.Enumerators.OrderStatus>(order.Status.ToString(), out var status) ? status : CSharp.AlgoTemplate.Models.Enumerators.OrderStatus.UnknownStatus;
+            await _algoInstanceTradeRepository.CreateOrUpdateAlgoInstanceOrderAsync(algoInstanceOrder);
+
             //If order does not have any trades then ignore it :)
-            if (!order.Trades.Any())
+            if (order.Trades == null || !order.Trades.Any())
                 return;
 
             foreach (var orderTrade in order.Trades)
@@ -70,7 +76,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
                     InstanceId = algoInstanceOrder.InstanceId,
                     AssetId = orderTrade.BaseAssetId,
                     AssetPairId = order.AssetPairId,
-                    Fee = orderTrade.Fees.Any()
+                    Fee = orderTrade.Fees!=null && orderTrade.Fees.Any()
                         ? orderTrade.Fees.Where(x => !string.IsNullOrEmpty(x.Volume)).Sum(x => double.Parse(x.Volume))
                         : (double?) null,
                     Amount = string.IsNullOrEmpty(orderTrade.BaseVolume)
@@ -84,6 +90,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
                 };
 
                 await _algoInstanceTradeRepository.SaveAlgoInstanceTradeAsync(trade);
+                await _orderUpdatePublisher.Publish(trade);
             }
         }
     }
