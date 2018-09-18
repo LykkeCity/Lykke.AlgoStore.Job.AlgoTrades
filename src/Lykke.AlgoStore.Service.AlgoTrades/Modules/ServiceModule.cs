@@ -38,8 +38,8 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Modules
 
             RegisterDictionaryEntities(builder);
 
-            _services.RegisterAssetsClient(AssetServiceSettings.Create(new Uri(_settings.CurrentValue.AssetsServiceClient.ServiceUrl), TimeSpan.FromMinutes(3)));
-
+            builder.RegisterAssetsClient(AssetServiceSettings.Create(new Uri(_settings.CurrentValue.AssetsServiceClient.ServiceUrl), TimeSpan.FromMinutes(3)));
+            
             builder.Populate(_services);
         }
 
