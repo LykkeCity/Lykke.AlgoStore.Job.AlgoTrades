@@ -10,6 +10,7 @@ using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Models;
 using Lykke.Common.Log;
 using MongoDB.Bson;
 using StackExchange.Redis;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Services
 {
@@ -17,6 +18,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
     {
         private readonly ISubscriber _redisPublisher;
         private readonly ILog _log;
+        private readonly NewtonsoftSerializer _messageSerializer;
 
         public RedisOrderUpdatePublisher(string endPoint, string password, ILogFactory logFactory)
         {
@@ -34,22 +36,23 @@ namespace Lykke.AlgoStore.Service.AlgoTrades.Services
             _redisPublisher = connection.GetSubscriber();
 
             _log = logFactory.CreateLog(this);
+
+            _messageSerializer = new NewtonsoftSerializer();
         }
 
         public async Task Publish(AlgoInstanceTrade orderTrade)
         {
             try
             {
-                using (MemoryStream stream = new MemoryStream())
-                {
-                    IFormatter formatter = new BinaryFormatter();
-                    formatter.Serialize(stream, orderTrade);
-                    await _redisPublisher.PublishAsync(new RedisChannel(orderTrade.InstanceId, RedisChannel.PatternMode.Literal), RedisValue.CreateFrom(stream), CommandFlags.DemandMaster);
-                }
+                var orderUpdate = await _messageSerializer.SerializeAsync(orderTrade);
+
+                var receivers =  await _redisPublisher.PublishAsync(new RedisChannel(orderTrade.InstanceId, RedisChannel.PatternMode.Literal), orderUpdate, CommandFlags.DemandMaster);
+
+                _log.Info($"Order update received for order Id {orderTrade.Id}, instanceId {orderTrade.InstanceId}. Number of receivers the event was sent to: {receivers} ", orderTrade.ToJson());
             }
             catch (Exception ex)
             {
-                _log.Error(ex, "Unable to publish order update message to Redis", orderTrade);
+                _log.Error(ex, "Unable to publish order update message to Redis", orderTrade.ToJson());
             }
         }
     }
