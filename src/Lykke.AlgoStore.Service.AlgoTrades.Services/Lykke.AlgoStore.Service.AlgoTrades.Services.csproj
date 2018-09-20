@@ -15,7 +15,8 @@
     <PackageReference Include="Lykke.MatchingEngineConnector" Version="8.3.0" />
     <PackageReference Include="Lykke.Service.Assets.Client" Version="4.4.0" />
     <PackageReference Include="Lykke.Service.OperationsRepository.Contract" Version="1.0.13" />
-    <PackageReference Include="StackExchange.Redis" Version="2.0.505" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="3.5.0" />
   </ItemGroup>
 
   <ItemGroup>
