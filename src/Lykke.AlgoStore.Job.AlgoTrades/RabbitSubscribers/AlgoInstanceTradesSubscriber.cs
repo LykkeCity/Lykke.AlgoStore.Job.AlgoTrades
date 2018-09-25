@@ -79,8 +79,16 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
 
             if (algoInstanceOrder == null) return;
 
+            _log.Info("Trade save started");
+
             await _algoTradesHistoryWriter.SaveAsync(clientTrade, algoInstanceOrder);
+
+            _log.Info("Trade save finished");
+            _log.Info("TotalNumberOfTrades update started");
+
             await _tradesCountUpdater.IncreaseInstanceTradeCountAsync(clientTrade, algoInstanceOrder);
+
+            _log.Info("TotalNumberOfTrades update finished");
         }
 
         public void Dispose()
