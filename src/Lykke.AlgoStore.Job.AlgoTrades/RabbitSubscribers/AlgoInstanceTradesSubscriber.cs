@@ -66,31 +66,41 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.RabbitSubscribers
 
         private async Task ProcessMessageAsync(OperationsHistoryMessage message)
         {
-            var operationType = (OperationType)Enum.Parse(typeof(OperationType), message.OpType);
-
-            if (operationType != OperationType.ClientTrade) return;
-
-            var clientTrade = JsonConvert.DeserializeObject<ClientTradeDto>(message.Data);
-
-            if (string.IsNullOrEmpty(clientTrade.MarketOrderId)) return;
-
-            var algoInstanceOrder = await _instanceTradeRepository
-                    .GetAlgoInstanceOrderAsync(clientTrade.MarketOrderId, clientTrade.ClientId);
-
-            if (algoInstanceOrder == null) return;
-
             var log = _logFactory.CreateLog(this);
 
-            log.Info("Trade save started");
+            try
+            {
+                log.Info("ProcessMessageAsync started");
 
-            await _algoTradesHistoryWriter.SaveAsync(clientTrade, algoInstanceOrder);
+                var operationType = (OperationType) Enum.Parse(typeof(OperationType), message.OpType);
 
-            log.Info("Trade save finished");
-            log.Info("TotalNumberOfTrades update started");
+                if (operationType != OperationType.ClientTrade) return;
 
-            await _tradesCountUpdater.IncreaseInstanceTradeCountAsync(clientTrade, algoInstanceOrder);
+                var clientTrade = JsonConvert.DeserializeObject<ClientTradeDto>(message.Data);
 
-            log.Info("TotalNumberOfTrades update finished");
+                if (string.IsNullOrEmpty(clientTrade.MarketOrderId)) return;
+
+                var algoInstanceOrder = await _instanceTradeRepository
+                    .GetAlgoInstanceOrderAsync(clientTrade.MarketOrderId, clientTrade.ClientId);
+
+                if (algoInstanceOrder == null) return;
+
+                log.Info("Trade save started");
+
+                await _algoTradesHistoryWriter.SaveAsync(clientTrade, algoInstanceOrder);
+
+                log.Info("Trade save finished");
+                log.Info("TotalNumberOfTrades update started");
+
+                await _tradesCountUpdater.IncreaseInstanceTradeCountAsync(clientTrade, algoInstanceOrder);
+
+                log.Info("TotalNumberOfTrades update finished");
+                log.Info("ProcessMessageAsync finished");
+            }
+            catch (Exception ex)
+            {
+                log.Error(ex);
+            }
         }
 
         public void Dispose()
