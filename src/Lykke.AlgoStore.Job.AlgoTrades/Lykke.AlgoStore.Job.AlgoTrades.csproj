@@ -48,4 +48,8 @@
     <ProjectReference Include="..\Lykke.AlgoStore.Service.AlgoTrades.Core\Lykke.AlgoStore.Service.AlgoTrades.Core.csproj" />
     <ProjectReference Include="..\Lykke.AlgoStore.Service.AlgoTrades.Services\Lykke.AlgoStore.Service.AlgoTrades.Services.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
 </Project>
