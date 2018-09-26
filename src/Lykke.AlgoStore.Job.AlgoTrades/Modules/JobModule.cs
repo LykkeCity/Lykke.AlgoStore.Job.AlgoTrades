@@ -8,6 +8,7 @@ using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 using Lykke.AlgoStore.Service.AlgoTrades.Services;
 using Lykke.AlgoStore.Service.Statistics.Client;
 using Lykke.Common.Log;
+using Lykke.Sdk.Health;
 using Lykke.SettingsReader;
 
 namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
@@ -23,6 +24,10 @@ namespace Lykke.AlgoStore.Job.AlgoTrades.Modules
 
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<HealthService>()
+                .As<IHealthService>()
+                .SingleInstance();
+
             builder.RegisterStatisticsClient(_settings.CurrentValue.AlgoStoreStatisticsClient.ServiceUrl);
 
             RegisterRepositories(builder);
