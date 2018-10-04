@@ -5,7 +5,6 @@ using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Tests.Mocks

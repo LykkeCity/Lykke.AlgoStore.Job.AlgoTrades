@@ -4,5 +4,7 @@
     {
         public DbSettings Db { get; set; }
         public RabbitMqSettings Rabbit { get; set; }
+        public MatchingEngineRabbitMqSettings MatchingEngineRabbitMq { get; set; }
+        public RedisSettings Redis { get; set; }
     }
 }

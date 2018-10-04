@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
-using AzureStorage.Tables;
 using Common.Log;
 using Lykke.AlgoStore.CSharp.AlgoTemplate.Models.Mapper;
 using Lykke.Common.ApiLibrary.Middleware;
@@ -12,8 +10,10 @@ using Lykke.Logs;
 using Lykke.AlgoStore.Service.AlgoTrades.Infrastructure;
 using Lykke.AlgoStore.Service.AlgoTrades.Settings;
 using Lykke.AlgoStore.Service.AlgoTrades.Modules;
+using Lykke.Common;
+using Lykke.Common.Api.Contract.Responses;
+using Lykke.Common.Log;
 using Lykke.SettingsReader;
-using Lykke.SlackNotification.AzureQueue;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +26,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades
         public IHostingEnvironment Environment { get; }
         public IContainer ApplicationContainer { get; private set; }
         public IConfigurationRoot Configuration { get; }
-        public ILog Log { get; private set; }
+        private ILog _log;
 
         public Startup(IHostingEnvironment env)
         {
@@ -63,20 +63,36 @@ namespace Lykke.AlgoStore.Service.AlgoTrades
                     options.SchemaFilter<NullableTypeSchemaFilter>();
                 });
 
+                var settingsManager = Configuration.LoadSettings<AppSettings>(x =>
+                {
+                    x.SetConnString(y => y.SlackNotifications.AzureQueue.ConnectionString);
+                    x.SetQueueName(y => y.SlackNotifications.AzureQueue.QueueName);
+                    x.SenderName = $"{AppEnvironment.Name} {AppEnvironment.Version}";
+                });
+
+                var appSettings = settingsManager.CurrentValue;
+
+                services.AddLykkeLogging(
+                    settingsManager.ConnectionString(s => s.AlgoTradesService.Db.LogsConnString),
+                    "AlgoTradesLog",
+                    appSettings.SlackNotifications.AzureQueue.ConnectionString,
+                    appSettings.SlackNotifications.AzureQueue.QueueName);
+
                 var builder = new ContainerBuilder();
-                var appSettings = Configuration.LoadSettings<AppSettings>();
-
-                Log = CreateLogWithSlack(services, appSettings);
-
-                builder.RegisterModule(new ServiceModule(appSettings, Log));
+                
+                builder.RegisterModule(new ServiceModule(settingsManager));
                 builder.Populate(services);
+
                 ApplicationContainer = builder.Build();
+
+                var logFactory = ApplicationContainer.Resolve<ILogFactory>();
+                _log = logFactory.CreateLog(this);
 
                 return new AutofacServiceProvider(ApplicationContainer);
             }
             catch (Exception ex)
             {
-                Log?.WriteFatalError(nameof(Startup), nameof(ConfigureServices), ex);
+                _log.Critical(nameof(Startup), ex, nameof(ConfigureServices));
                 throw;
             }
         }
@@ -91,7 +107,7 @@ namespace Lykke.AlgoStore.Service.AlgoTrades
                 }
 
                 app.UseLykkeForwardedHeaders();
-                app.UseLykkeMiddleware("AlgoTrades", ex => new { Message = "Technical problem" });
+                app.UseLykkeMiddleware(ex => new ErrorResponse { ErrorMessage = "Technical problem" });
 
                 app.UseMvc();
                 app.UseSwagger(c =>
@@ -105,111 +121,61 @@ namespace Lykke.AlgoStore.Service.AlgoTrades
                 });
                 app.UseStaticFiles();
 
-                appLifetime.ApplicationStarted.Register(() => StartApplication().GetAwaiter().GetResult());
-                appLifetime.ApplicationStopping.Register(() => StopApplication().GetAwaiter().GetResult());
-                appLifetime.ApplicationStopped.Register(() => CleanUp().GetAwaiter().GetResult());
+                appLifetime.ApplicationStarted.Register(StartApplication);
+                appLifetime.ApplicationStopping.Register(StopApplication);
+                appLifetime.ApplicationStopped.Register(CleanUp);
             }
             catch (Exception ex)
             {
-                Log?.WriteFatalError(nameof(Startup), nameof(Configure), ex);
+                _log?.Critical(nameof(Startup), ex, nameof(Configure));
                 throw;
             }
         }
 
-        private async Task StartApplication()
+        private void StartApplication()
         {
             try
             {
-                await Log.WriteMonitorAsync("", $"Env: {Program.EnvInfo}", "Started");
+                _log?.Info(nameof(StartApplication), "Started", $"Env: {Program.EnvInfo}");
             }
             catch (Exception ex)
             {
-                await Log.WriteFatalErrorAsync(nameof(Startup), nameof(StartApplication), "", ex);
+                _log?.Critical(nameof(StartApplication), ex);
                 throw;
             }
         }
 
-        private async Task StopApplication()
+        private void StopApplication()
         {
             try
             {
-                await Log.WriteMonitorAsync("", $"Env: {Program.EnvInfo}", "Stopped");
+                _log?.Info(nameof(StopApplication), "Stopped", $"Env: {Program.EnvInfo}");
             }
             catch (Exception ex)
             {
-                if (Log != null)
-                {
-                    await Log.WriteFatalErrorAsync(nameof(Startup), nameof(StopApplication), "", ex);
-                }
+                _log?.Critical(nameof(StopApplication), ex);
                 throw;
             }
         }
 
-        private async Task CleanUp()
+        private void CleanUp()
         {
             try
             {
-                if (Log != null)
-                {
-                    await Log.WriteMonitorAsync("", $"Env: {Program.EnvInfo}", "Terminating");
-                }
+                _log?.Info(nameof(CleanUp), "Terminating", $"Env: {Program.EnvInfo}");
 
                 ApplicationContainer.Dispose();
             }
             catch (Exception ex)
             {
-                if (Log != null)
+                if (_log != null)
                 {
-                    await Log.WriteFatalErrorAsync(nameof(Startup), nameof(CleanUp), "", ex);
-                    (Log as IDisposable)?.Dispose();
+                    _log.Critical(nameof(CleanUp), ex, "", nameof(CleanUp));
+
+                    (_log as IDisposable)?.Dispose();
                 }
                 throw;
             }
-        }
-
-        private static ILog CreateLogWithSlack(IServiceCollection services, IReloadingManager<AppSettings> settings)
-        {
-            var consoleLogger = new LogToConsole();
-            var aggregateLogger = new AggregateLogger();
-
-            aggregateLogger.AddLog(consoleLogger);
-
-            var dbLogConnectionStringManager = settings.Nested(x => x.AlgoTradesService.Db.LogsConnString);
-            var dbLogConnectionString = dbLogConnectionStringManager.CurrentValue;
-
-            if (string.IsNullOrEmpty(dbLogConnectionString))
-            {
-                consoleLogger.WriteWarningAsync(nameof(Startup), nameof(CreateLogWithSlack), "Table loggger is not inited").Wait();
-                return aggregateLogger;
-            }
-
-            if (dbLogConnectionString.StartsWith("${") && dbLogConnectionString.EndsWith("}"))
-                throw new InvalidOperationException($"LogsConnString {dbLogConnectionString} is not filled in settings");
-
-            var persistenceManager = new LykkeLogToAzureStoragePersistenceManager(
-                AzureTableStorage<LogEntity>.Create(dbLogConnectionStringManager, "AlgoTradesLog", consoleLogger),
-                consoleLogger);
-
-            // Creating slack notification service, which logs own azure queue processing messages to aggregate log
-            var slackService = services.UseSlackNotificationsSenderViaAzureQueue(new AzureQueueIntegration.AzureQueueSettings
-            {
-                ConnectionString = settings.CurrentValue.SlackNotifications.AzureQueue.ConnectionString,
-                QueueName = settings.CurrentValue.SlackNotifications.AzureQueue.QueueName
-            }, aggregateLogger);
-
-            var slackNotificationsManager = new LykkeLogToAzureSlackNotificationsManager(slackService, consoleLogger);
-
-            // Creating azure storage logger, which logs own messages to concole log
-            var azureStorageLogger = new LykkeLogToAzureStorage(
-                persistenceManager,
-                slackNotificationsManager,
-                consoleLogger);
-
-            azureStorageLogger.Start();
-
-            aggregateLogger.AddLog(azureStorageLogger);
-
-            return aggregateLogger;
         }
     }
 }

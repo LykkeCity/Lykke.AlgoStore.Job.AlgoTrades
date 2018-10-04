@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using System.Net;
+﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Lykke.Common.Api.Contract.Responses;
-using Lykke.AlgoStore.Service.AlgoTrades.Core.Services;
 
 namespace Lykke.AlgoStore.Service.AlgoTrades.Controllers
 {
