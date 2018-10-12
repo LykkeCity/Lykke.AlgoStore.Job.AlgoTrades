@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
-    <PackageReference Include="Lykke.AlgoStore.CSharp.AlgoTemplate.Models" Version="1.0.101" />
+    <PackageReference Include="Lykke.AlgoStore.CSharp.AlgoTemplate.Models" Version="1.0.103" />
     <PackageReference Include="Lykke.AlgoStore.Service.Statistics.Client" Version="1.0.6" />
     <PackageReference Include="Lykke.Common" Version="7.0.4" />
     <PackageReference Include="Lykke.MatchingEngineConnector" Version="8.3.0" />
